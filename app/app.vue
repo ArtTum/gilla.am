@@ -122,15 +122,10 @@ onBeforeUnmount(() => {
               <span class="menu-card__description">{{ menu.description }}</span>
             </span>
             <span class="menu-card__action" aria-hidden="true">
-              <span class="menu-card__format">{{ menu.pages }} pages</span>
               <span class="menu-card__arrow">→</span>
             </span>
           </a>
         </nav>
-
-        <p class="pdf-note">
-          Pages load gradually for smooth viewing on every phone.
-        </p>
       </section>
 
       <footer class="contact-bar" aria-label="Contact Gilla">
@@ -177,17 +172,17 @@ onBeforeUnmount(() => {
             <div class="viewer-heading">
               <span class="viewer-heading__eyebrow">Gilla Yerevan</span>
               <h2>{{ activeMenu.title }}</h2>
-              <span>{{ activeMenu.pages }} pages</span>
             </div>
 
             <a
-              class="viewer-pdf-link"
+              class="viewer-external-link"
               :href="activeMenu.href"
               target="_blank"
               rel="noopener"
               type="application/pdf"
+              aria-label="Open original document in a new tab"
             >
-              PDF ↗
+              ↗
             </a>
           </header>
 

@@ -17,7 +17,7 @@ pnpm generate
 
 The static site is generated in `.output/public`.
 
-## Refresh the optimized PDFs
+## Refresh the menu documents
 
 Install Poppler, Pillow, pypdf and reportlab, then run:
 
