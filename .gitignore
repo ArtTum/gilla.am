@@ -1,0 +1,19 @@
+node_modules
+.nuxt
+.output
+.data
+.nitro
+.cache
+dist
+tmp
+*.log
+.DS_Store
+.envrc
+
+# Legacy source assets kept locally; deployable versions live in public/.
+/*.pdf
+/*.png
+/bg.jpg
+/bg.jpeg
+/index.html
+/logo.png
