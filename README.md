@@ -12,22 +12,25 @@ pnpm dev
 ## Production
 
 ```bash
-pnpm generate
+pnpm build
+pnpm start
 ```
 
-The static site is generated in `.output/public`.
+The Node.js server entry point is generated at `.output/server/index.mjs`.
 
 ## Ubuntu/Debian server
 
-After `gilla.am` and `www.gilla.am` point to the server IP and the generated
-site is available under `/var/domains/gilla.am`, configure Nginx and SSL with:
+After `gilla.am` and `www.gilla.am` point to the server IP and the project is
+available under `/var/domains/gilla.am`, build it and configure PM2, Nginx and
+SSL with:
 
 ```bash
 sudo bash scripts/setup-nginx.sh you@example.com
 ```
 
-The installer creates `/etc/nginx/conf.d/gilla.am.conf`, enables HTTPS and
-redirects `www.gilla.am` to `gilla.am`.
+The installer runs Nuxt with PM2 on `127.0.0.1:3020`, creates
+`/etc/nginx/conf.d/gilla.am.conf`, enables HTTPS and redirects `www.gilla.am`
+to `gilla.am`.
 
 ## Refresh the menu documents
 
