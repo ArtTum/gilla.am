@@ -1,20 +1,20 @@
 <script setup lang="ts">
 const menus = [
   {
+    eyebrow: 'Celebrations',
+    title: 'Birthday & Corporate Menu',
+    description: 'Set menus for events and special occasions',
+    href: '/pdfs/gilla-events-menu.pdf',
+    pageBase: '/menu-pages/events',
+    pages: 53
+  },
+  {
     eyebrow: 'Restaurant',
     title: 'Main Menu',
     description: 'Breakfast, dishes, desserts and drinks',
     href: '/pdfs/gilla-main-menu.pdf',
     pageBase: '/menu-pages/main',
     pages: 50
-  },
-  {
-    eyebrow: 'Celebrations',
-    title: 'Birthday & Corporate',
-    description: 'Set menus for events and special occasions',
-    href: '/pdfs/gilla-events-menu.pdf',
-    pageBase: '/menu-pages/events',
-    pages: 53
   }
 ] as const
 
