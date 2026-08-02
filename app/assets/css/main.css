@@ -68,6 +68,17 @@ a {
   pointer-events: none;
 }
 
+.site-shell::before {
+  position: absolute;
+  z-index: -1;
+  inset: -18%;
+  background: radial-gradient(circle at 50% 25%, rgba(230, 188, 89, 0.13), transparent 38%);
+  content: '';
+  opacity: 0.45;
+  pointer-events: none;
+  animation: glowBreath 7s ease-in-out infinite;
+}
+
 .ambient {
   position: absolute;
   z-index: -1;
@@ -108,6 +119,7 @@ a {
   flex-direction: column;
   align-items: center;
   text-align: center;
+  animation: revealDown 720ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .brand__logo {
@@ -115,6 +127,9 @@ a {
   width: clamp(9.25rem, 43vw, 13rem);
   height: auto;
   filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.25));
+  transform-origin: 50% 55%;
+  animation: logoFloat 5.5s ease-in-out 900ms infinite;
+  will-change: transform;
 }
 
 .brand__location {
@@ -127,6 +142,8 @@ a {
 }
 
 .menu-panel {
+  position: relative;
+  overflow: hidden;
   padding: clamp(1.15rem, 4.5vw, 1.8rem);
   border: 1px solid var(--line);
   border-radius: 1.7rem;
@@ -134,6 +151,16 @@ a {
   box-shadow: 0 1.4rem 3.8rem rgba(0, 0, 0, 0.28);
   -webkit-backdrop-filter: blur(14px);
   backdrop-filter: blur(14px);
+  animation: panelReveal 760ms cubic-bezier(0.22, 1, 0.36, 1) 100ms both;
+}
+
+.menu-panel::before {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(125deg, rgba(255, 255, 255, 0.07), transparent 28%, transparent 72%, rgba(230, 188, 89, 0.045));
+  content: '';
+  pointer-events: none;
 }
 
 .menu-panel__heading {
@@ -173,6 +200,8 @@ h1 {
 }
 
 .menu-card {
+  position: relative;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -185,7 +214,26 @@ h1 {
   box-shadow: inset 0 1px rgba(255, 255, 255, 0.05);
   text-decoration: none;
   touch-action: manipulation;
-  transition: transform 180ms ease, border-color 180ms ease, background-color 180ms ease;
+  animation: cardReveal 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1), border-color 180ms ease, background-color 180ms ease, box-shadow 220ms ease;
+}
+
+.menu-card:nth-child(1) {
+  animation-delay: 260ms;
+}
+
+.menu-card:nth-child(2) {
+  animation-delay: 380ms;
+}
+
+.menu-card::before {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 34%, rgba(255, 255, 255, 0.13) 48%, transparent 62%);
+  content: '';
+  pointer-events: none;
+  transform: translateX(-130%);
+  transition: transform 650ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .menu-card__copy {
@@ -243,14 +291,28 @@ h1 {
   color: #123a31;
   font-size: 1.2rem;
   font-weight: 800;
+  box-shadow: 0 0.5rem 1.25rem rgba(207, 151, 29, 0.2);
+  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 220ms ease;
 }
 
 .menu-card:hover,
 .menu-card:focus-visible {
   border-color: rgba(230, 188, 89, 0.65);
   background: rgba(255, 249, 235, 0.12);
+  box-shadow: 0 0.9rem 2rem rgba(0, 0, 0, 0.18);
   outline: none;
-  transform: translateY(-2px);
+  transform: translateY(-3px);
+}
+
+.menu-card:hover::before,
+.menu-card:focus-visible::before {
+  transform: translateX(130%);
+}
+
+.menu-card:hover .menu-card__arrow,
+.menu-card:focus-visible .menu-card__arrow {
+  box-shadow: 0 0.65rem 1.5rem rgba(207, 151, 29, 0.38);
+  transform: rotate(8deg) scale(1.06);
 }
 
 .menu-card:active {
@@ -271,6 +333,7 @@ h1 {
   align-items: center;
   margin-top: auto;
   padding: 0.4rem 0.2rem 0;
+  animation: contactReveal 700ms cubic-bezier(0.22, 1, 0.36, 1) 520ms both;
 }
 
 .contact-link {
@@ -280,6 +343,7 @@ h1 {
   justify-content: center;
   gap: 0.16rem;
   text-decoration: none;
+  transition: color 180ms ease, transform 180ms ease;
 }
 
 .contact-link--address {
@@ -306,11 +370,89 @@ h1 {
   outline-offset: 0.3rem;
 }
 
+.contact-link:hover,
+.contact-link:focus-visible {
+  color: var(--gold-300);
+  transform: translateY(-2px);
+}
+
 .contact-bar__divider {
   width: 1px;
   height: 2.15rem;
   margin: 0 1rem;
   background: var(--line);
+}
+
+@keyframes revealDown {
+  from {
+    opacity: 0;
+    transform: translateY(-1rem) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes panelReveal {
+  from {
+    opacity: 0;
+    transform: translateY(1.35rem) scale(0.975);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes cardReveal {
+  from {
+    opacity: 0;
+    transform: translateY(0.9rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes contactReveal {
+  from {
+    opacity: 0;
+    transform: translateY(0.65rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes logoFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-0.35rem);
+  }
+}
+
+@keyframes glowBreath {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.96);
+  }
+
+  50% {
+    opacity: 0.7;
+    transform: scale(1.04);
+  }
 }
 
 @media (min-width: 700px) {
@@ -416,6 +558,8 @@ h1 {
   *,
   *::before,
   *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
   }
