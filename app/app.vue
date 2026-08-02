@@ -5,16 +5,80 @@ const menus = [
     title: 'Main Menu',
     description: 'Breakfast, dishes, desserts and drinks',
     href: '/pdfs/gilla-main-menu.pdf',
-    size: 'Optimized PDF'
+    pageBase: '/menu-pages/main',
+    pages: 50
   },
   {
     eyebrow: 'Celebrations',
     title: 'Birthday & Corporate',
     description: 'Set menus for events and special occasions',
     href: '/pdfs/gilla-events-menu.pdf',
-    size: 'Optimized PDF'
+    pageBase: '/menu-pages/events',
+    pages: 53
   }
-]
+] as const
+
+type Menu = (typeof menus)[number]
+
+const activeMenu = ref<Menu | null>(null)
+const visiblePageCount = ref(4)
+const closeButton = ref<HTMLButtonElement | null>(null)
+
+function pageFileName(page: number) {
+  return `page-${page < 10 ? `0${page}` : page}.jpg`
+}
+
+const renderedPages = computed(() => {
+  const menu = activeMenu.value
+  if (!menu) return []
+
+  const count = Math.min(visiblePageCount.value, menu.pages)
+  return Array.from({ length: count }, (_, index) => {
+    const page = index + 1
+    return {
+      number: page,
+      src: `${menu.pageBase}/${pageFileName(page)}`
+    }
+  })
+})
+
+async function openViewer(menu: Menu) {
+  activeMenu.value = menu
+  visiblePageCount.value = 4
+  await nextTick()
+  closeButton.value?.focus()
+}
+
+function closeViewer() {
+  activeMenu.value = null
+  visiblePageCount.value = 4
+}
+
+function loadMorePages() {
+  if (!activeMenu.value) return
+  visiblePageCount.value = Math.min(visiblePageCount.value + 4, activeMenu.value.pages)
+}
+
+function onViewerScroll(event: Event) {
+  const viewer = event.currentTarget as HTMLElement
+  const remaining = viewer.scrollHeight - viewer.scrollTop - viewer.clientHeight
+  if (remaining < 900) loadMorePages()
+}
+
+function onKeydown(event: KeyboardEvent) {
+  if (event.key === 'Escape' && activeMenu.value) closeViewer()
+}
+
+watch(activeMenu, (menu) => {
+  if (!import.meta.client) return
+  document.documentElement.style.overflow = menu ? 'hidden' : ''
+})
+
+onMounted(() => window.addEventListener('keydown', onKeydown))
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', onKeydown)
+  document.documentElement.style.overflow = ''
+})
 </script>
 
 <template>
@@ -38,7 +102,7 @@ const menus = [
         <div class="menu-panel__heading">
           <p class="kicker">Discover Gilla</p>
           <h1 id="menu-heading">Our menus</h1>
-          <p>Choose a menu to open it in your phone’s native PDF viewer.</p>
+          <p>Choose a menu and browse every page without leaving the Gilla website.</p>
         </div>
 
         <nav class="menu-list" aria-label="Gilla menus">
@@ -50,6 +114,7 @@ const menus = [
             target="_blank"
             rel="noopener"
             type="application/pdf"
+            @click.prevent="openViewer(menu)"
           >
             <span class="menu-card__copy">
               <span class="menu-card__eyebrow">{{ menu.eyebrow }}</span>
@@ -57,14 +122,14 @@ const menus = [
               <span class="menu-card__description">{{ menu.description }}</span>
             </span>
             <span class="menu-card__action" aria-hidden="true">
-              <span class="menu-card__format">{{ menu.size }}</span>
-              <span class="menu-card__arrow">↗</span>
+              <span class="menu-card__format">{{ menu.pages }} pages</span>
+              <span class="menu-card__arrow">→</span>
             </span>
           </a>
         </nav>
 
         <p class="pdf-note">
-          If the menu does not appear immediately, wait a moment while your phone opens the PDF.
+          Pages load gradually for smooth viewing on every phone.
         </p>
       </section>
 
@@ -86,4 +151,76 @@ const menus = [
       </footer>
     </main>
   </div>
+
+  <Teleport to="body">
+    <Transition name="viewer">
+      <div
+        v-if="activeMenu"
+        class="viewer-backdrop"
+        role="dialog"
+        aria-modal="true"
+        :aria-label="`${activeMenu.title} viewer`"
+        @click.self="closeViewer"
+      >
+        <section class="viewer-dialog">
+          <header class="viewer-header">
+            <button
+              ref="closeButton"
+              class="viewer-close"
+              type="button"
+              aria-label="Close menu"
+              @click="closeViewer"
+            >
+              <span aria-hidden="true">×</span>
+            </button>
+
+            <div class="viewer-heading">
+              <span class="viewer-heading__eyebrow">Gilla Yerevan</span>
+              <h2>{{ activeMenu.title }}</h2>
+              <span>{{ activeMenu.pages }} pages</span>
+            </div>
+
+            <a
+              class="viewer-pdf-link"
+              :href="activeMenu.href"
+              target="_blank"
+              rel="noopener"
+              type="application/pdf"
+            >
+              PDF ↗
+            </a>
+          </header>
+
+          <div class="viewer-scroll" @scroll.passive="onViewerScroll">
+            <div class="viewer-pages">
+              <figure
+                v-for="page in renderedPages"
+                :key="page.number"
+                class="viewer-page"
+              >
+                <img
+                  :src="page.src"
+                  :alt="`${activeMenu.title}, page ${page.number}`"
+                  :loading="page.number <= 4 ? 'eager' : 'lazy'"
+                  decoding="async"
+                >
+                <figcaption>{{ page.number }} / {{ activeMenu.pages }}</figcaption>
+              </figure>
+
+              <button
+                v-if="visiblePageCount < activeMenu.pages"
+                class="viewer-load-more"
+                type="button"
+                @click="loadMorePages"
+              >
+                Load more pages
+              </button>
+
+              <p v-else class="viewer-end">End of menu</p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </Transition>
+  </Teleport>
 </template>

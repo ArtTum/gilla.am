@@ -11,8 +11,8 @@ from reportlab.pdfgen import canvas
 
 
 MENUS = (
-    ("menu1.pdf", "public/pdfs/gilla-main-menu.pdf"),
-    ("menu2.pdf", "public/pdfs/gilla-events-menu.pdf"),
+    ("menu1.pdf", "public/pdfs/gilla-main-menu.pdf", "public/menu-pages/main"),
+    ("menu2.pdf", "public/pdfs/gilla-events-menu.pdf", "public/menu-pages/events"),
 )
 
 
@@ -20,7 +20,13 @@ def page_number(path: Path) -> int:
     return int(path.stem.rsplit("-", 1)[-1])
 
 
-def optimize_pdf(source: Path, destination: Path, renderer: str, workdir: Path) -> None:
+def optimize_pdf(
+    source: Path,
+    destination: Path,
+    page_destination: Path,
+    renderer: str,
+    workdir: Path,
+) -> None:
     page_dir = workdir / source.stem
     page_dir.mkdir(parents=True, exist_ok=True)
     prefix = page_dir / "page"
@@ -45,6 +51,10 @@ def optimize_pdf(source: Path, destination: Path, renderer: str, workdir: Path) 
         raise RuntimeError(
             f"Rendered {len(images)} pages from {source.name}; expected {len(source_reader.pages)}"
         )
+
+    page_destination.mkdir(parents=True, exist_ok=True)
+    for image_path in images:
+        shutil.copy2(image_path, page_destination / image_path.name)
 
     destination.parent.mkdir(parents=True, exist_ok=True)
     pdf = canvas.Canvas(str(destination), pageCompression=1)
@@ -82,10 +92,11 @@ def main() -> None:
     workdir = root / "tmp" / "pdfs" / "optimized"
     workdir.mkdir(parents=True, exist_ok=True)
 
-    for source_name, destination_name in MENUS:
+    for source_name, destination_name, page_destination_name in MENUS:
         optimize_pdf(
             root / source_name,
             root / destination_name,
+            root / page_destination_name,
             args.renderer,
             workdir,
         )
