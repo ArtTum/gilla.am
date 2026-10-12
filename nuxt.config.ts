@@ -37,6 +37,8 @@ export default defineNuxtConfig({
   nitro: {
     preset: 'node-server',
     routeRules: {
+      '/admin': { headers: { 'x-robots-tag': 'noindex, nofollow' } },
+      '/api/admin/**': { headers: { 'cache-control': 'no-store' } },
       '/pdfs/**': {
         headers: {
           'content-type': 'application/pdf',

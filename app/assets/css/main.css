@@ -53,7 +53,7 @@ a {
   background-color: var(--forest-950);
   background-image:
     linear-gradient(180deg, rgba(1, 25, 21, 0.42), rgba(1, 25, 21, 0.76)),
-    url('/images/gilla-background.jpg');
+    var(--site-background, url('/images/gilla-background.jpg'));
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -147,7 +147,7 @@ a {
   padding: clamp(1.15rem, 4.5vw, 1.8rem);
   border: 1px solid var(--line);
   border-radius: 1.7rem;
-  background: linear-gradient(150deg, rgba(7, 63, 52, 0.88), rgba(2, 34, 29, 0.79));
+  background: linear-gradient(150deg, var(--primary-soft, rgba(7, 63, 52, 0.88)), var(--primary-deep, rgba(2, 34, 29, 0.79)));
   box-shadow: 0 1.4rem 3.8rem rgba(0, 0, 0, 0.28);
   -webkit-backdrop-filter: blur(14px);
   backdrop-filter: blur(14px);
@@ -383,7 +383,7 @@ h1 {
   min-height: 0;
   flex-direction: column;
   overflow: hidden;
-  background: #062f28;
+  background: var(--forest-950);
 }
 
 .viewer-header {
@@ -400,7 +400,7 @@ h1 {
     0.65rem
     max(0.75rem, env(safe-area-inset-left));
   border-bottom: 1px solid rgba(230, 188, 89, 0.2);
-  background: rgba(4, 45, 38, 0.96);
+  background: var(--forest-900);
   box-shadow: 0 0.6rem 2rem rgba(0, 0, 0, 0.25);
   -webkit-backdrop-filter: blur(16px);
   backdrop-filter: blur(16px);
@@ -481,7 +481,7 @@ h1 {
   overflow-y: auto;
   background:
     radial-gradient(circle at 50% 0, rgba(207, 151, 29, 0.1), transparent 28rem),
-    #082820;
+    var(--forest-950);
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
 }

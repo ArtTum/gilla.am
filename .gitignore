@@ -9,6 +9,9 @@ tmp
 *.log
 .DS_Store
 .envrc
+.env
+.env.*
+!.env.example
 
 # Legacy source assets kept locally; deployable versions live in public/.
 /*.pdf

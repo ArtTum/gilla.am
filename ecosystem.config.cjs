@@ -13,7 +13,8 @@ module.exports = {
       env_production: {
         NODE_ENV: 'production',
         NITRO_HOST: '127.0.0.1',
-        NITRO_PORT: 3020
+        NITRO_PORT: 3020,
+        GILLA_DATA_DIR: '/var/domains/gilla.am/.data'
       }
     }
   ]

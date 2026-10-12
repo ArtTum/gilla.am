@@ -44,7 +44,7 @@ fi
 
 export DEBIAN_FRONTEND=noninteractive
 apt-get update
-apt-get install -y nginx certbot python3-certbot-nginx curl
+apt-get install -y nginx certbot python3-certbot-nginx curl poppler-utils
 
 if ! command -v pnpm >/dev/null 2>&1; then
   npm install --global pnpm@10
@@ -57,6 +57,10 @@ fi
 cd "${APP_ROOT}"
 pnpm install --frozen-lockfile
 pnpm build
+
+if [[ ! -f "${APP_ROOT}/.data/admin.json" ]]; then
+  node scripts/create-admin.mjs
+fi
 
 if pm2 describe "${APP_NAME}" >/dev/null 2>&1; then
   pm2 reload ecosystem.config.cjs --only "${APP_NAME}" --env production --update-env
@@ -176,7 +180,7 @@ server {
     add_header X-Content-Type-Options "nosniff" always;
     add_header Referrer-Policy "strict-origin-when-cross-origin" always;
 
-    client_max_body_size 20m;
+    client_max_body_size 45m;
 
     location ^~ /_nuxt/ {
         root ${APP_ROOT}/.output/public;
@@ -213,7 +217,7 @@ server {
         proxy_set_header X-Forwarded-Proto \$scheme;
         proxy_connect_timeout 10s;
         proxy_send_timeout 60s;
-        proxy_read_timeout 60s;
+        proxy_read_timeout 240s;
     }
 }
 NGINX
